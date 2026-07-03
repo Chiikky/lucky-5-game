@@ -10,105 +10,115 @@
             background: #1e1e2e;
             color: #cdd6f4;
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             margin: 0;
         }
         .container {
             max-width: 600px;
             margin: auto;
             background: #313244;
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        h1 { color: #f5c2e7; margin-bottom: 25px; font-size: 2.5em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); }
+        h1 { color: #f5c2e7; margin-bottom: 20px; font-size: 2.3em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); }
         
-        select, button {
-            padding: 12px 20px;
-            font-size: 16px;
+        /* Sección de Reglas Desplegables */
+        .rules-details {
+            background: #1e1e2e;
+            border: 1px solid #45475a;
             border-radius: 8px;
-            border: none;
-            margin: 10px;
+            margin-bottom: 20px;
+            text-align: left;
         }
-        select { background: #45475a; color: #cdd6f4; cursor: pointer; font-weight: bold; }
-        button {
-            background: #a6e3a1;
-            color: #11111b;
+        .rules-summary {
+            padding: 12px;
             font-weight: bold;
+            color: #b4befe;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(166, 227, 161, 0.2);
+            user-select: none;
+            outline: none;
         }
+        .rules-content {
+            padding: 0 15px 15px 15px;
+            font-size: 0.92em;
+            color: #bac2de;
+            line-height: 1.5;
+        }
+        .rules-content ul { margin: 5px 0; padding-left: 20px; }
+        .rules-content li { margin-bottom: 5px; }
+
+        .setup-box { background: #45475a; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        input[type="text"] { padding: 8px 12px; border-radius: 6px; border: none; background: #1e1e2e; color: #cdd6f4; font-size: 15px; width: 60%; text-align: center; }
+        
+        select, button { padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; margin: 10px; }
+        select { background: #45475a; color: #cdd6f4; cursor: pointer; font-weight: bold; }
+        
+        button { background: #a6e3a1; color: #11111b; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(166, 227, 161, 0.2); }
         button:hover { transform: scale(1.05); background: #94e2d5; box-shadow: 0 6px 16px rgba(148, 226, 213, 0.4); }
         button:disabled { background: #585b70; color: #a6adc8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 25px 0;
-            background: #45475a;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .stat-box { font-size: 1.1em; }
-        .stat-val { font-weight: bold; color: #f9e2af; font-size: 1.2em; transition: all 0.3s; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; background: #45475a; padding: 12px; border-radius: 10px; }
+        .stat-box { font-size: 1.05em; }
+        .stat-val { font-weight: bold; color: #f9e2af; font-size: 1.15em; transition: all 0.3s; }
         
-        .cards-display {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
-            min-height: 105px;
-        }
+        .cards-display { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 95px; }
         
-        /* Animación de entrada para las cartas */
         .card {
-            background: white;
-            color: black;
-            width: 65px;
-            height: 95px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            opacity: 0;
-            transform: translateY(20px) rotate(-5deg);
+            background: white; color: black; width: 60px; height: 90px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-size: 20px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0; transform: translateY(20px);
             animation: dealCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         .card.red { color: #f38ba8; }
-        
-        /* Retraso de animación para simular el crupier repartiendo una por una */
         .card:nth-child(1) { animation-delay: 0.1s; }
         .card:nth-child(2) { animation-delay: 0.2s; }
         .card:nth-child(3) { animation-delay: 0.3s; }
         .card:nth-child(4) { animation-delay: 0.4s; }
         .card:nth-child(5) { animation-delay: 0.5s; }
 
-        @keyframes dealCard {
-            to {
-                opacity: 1;
-                transform: translateY(0) rotate(0deg);
-            }
-        }
+        @keyframes dealCard { to { opacity: 1; transform: translateY(0); } }
 
-        .result-msg { font-size: 1.4em; font-weight: bold; margin-top: 25px; min-height: 40px; transition: all 0.3s; }
-        .win { color: #a6e3a1; transform: scale(1.05); }
+        .result-msg { font-size: 1.3em; font-weight: bold; margin-top: 20px; min-height: 35px; }
+        .win { color: #a6e3a1; }
         .lose { color: #f38ba8; }
-        .game-over { color: #fab387; animation: blink 1.5s infinite; }
+        .game-over { color: #fab387; }
 
-        @keyframes blink {
-            50% { opacity: 0.5; }
-        }
+        /* Estilos de la Tabla del Marcador Histórico */
+        .leaderboard-section { margin-top: 35px; background: #1e1e2e; padding: 20px; border-radius: 10px; border: 1px solid #45475a; text-align: left; }
+        .leaderboard-section h2 { margin-top: 0; color: #f5c2e7; font-size: 1.4em; text-align: center; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #cdd6f4; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid #313244; text-align: center; font-size: 0.95em; }
+        th { color: #b4befe; font-weight: bold; background: #313244; }
+        .btn-reset-container { text-align: center; }
+        .btn-reset { background: #f38ba8; color: #11111b; font-size: 13px; padding: 8px 16px; margin-top: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-reset:hover { background: #eba0b2; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Lucky 5 🃏</h1>
+
+    <!-- Pestaña de Reglas Oficiales -->
+    <details class="rules-details">
+        <summary class="rules-summary">📜 Ver Reglas Oficiales del Juego</summary>
+        <div class="rules-content">
+            <ul>
+                <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines (4 palos de 13 valores cada uno)[cite: 3].</li>
+                <li><strong>Apuesta:</strong> Cada jugada tiene un costo fijo de entrada obligatorio de <strong>$1.000</strong>[cite: 3].</li>
+                <li><strong>Mecánica:</strong> Antes de la extracción, eliges un único valor numérico o letra (A, 2, ..., K)[cite: 3]. El sistema baraja y extrae exactamente <strong>5 cartas al azar sin reemplazo</strong>[cite: 3].</li>
+                <li><strong>Condición de Victoria ($X \geq 1$):</strong> Si sale al menos una carta con el valor que elegiste, recuperas tu entrada y ganas un premio neto de <strong>+$1.500</strong>[cite: 3].</li>
+                <li><strong>Condición de Derrota ($X = 0$):</strong> Si ninguna de las 5 cartas coincide con tu elección, pierdes el valor de la entrada[cite: 3].</li>
+            </ul>
+        </div>
+    </details>
+
+    <div class="setup-box">
+        <label for="player-name">Nombre del Jugador: </label>
+        <input type="text" id="player-name" placeholder="Escribe tu nombre aquí..." value="Jugador 1">
+    </div>
 
     <div class="stat-box">
         <label for="user-choice">Elige tu carta favorita: </label>
@@ -123,43 +133,69 @@
 
     <button id="play-btn" onclick="playLucky5()">Pagar $1.000 y Extraer 5 Cartas</button>
 
-    <div class="cards-display" id="cards-container">
-        </div>
+    <div class="cards-display" id="cards-container"></div>
 
-    <div id="result-output" class="result-msg">¡Bienvenido! Empiezas con un saldo inicial de $20.000.</div>
+    <div id="result-output" class="result-msg">¡Ingresa tu nombre y empieza a jugar! Saldo inicial: $20.000.</div>
 
     <div class="stats">
         <div class="stat-box">Saldo Actual:<br><span id="balance" class="stat-val" style="color: #a6e3a1;">$20.000</span></div>
         <div class="stat-box">Partidas:<br><span id="games-count" class="stat-val">0</span></div>
         <div class="stat-box">Éxitos (X):<br><span id="success-count" class="stat-val">-</span></div>
     </div>
+
+    <!-- SECCIÓN VISIBLE DEL MARCADOR CON REGISTROS -->
+    <div class="leaderboard-section">
+        <h2>🏆 Marcador: Registro de Puntuaciones</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Posición</th>
+                    <th>Jugador</th>
+                    <th>Partidas Jugadas</th>
+                    <th>Saldo Máximo</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Aquí se inyectan los registros guardados de forma automática -->
+            </tbody>
+        </table>
+        <div class="btn-reset-container">
+            <button class="btn-reset" onclick="resetLeaderboard()">Reiniciar Tabla de Récords 🔄</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Empezamos con un presupuesto base para evitar números rojos inmediatos
     let totalBalance = 20000; 
+    let maxBalanceAchieved = 20000; 
     let gamesPlayed = 0;
 
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const suits = [
-        { icon: '♥', color: 'red' },
-        { icon: '♦', color: 'red' },
-        { icon: '♣', color: 'black' },
-        { icon: '♠', color: 'black' }
+        { icon: '♥', color: 'red' }, { icon: '♦', color: 'red' },
+        { icon: '♣', color: 'black' }, { icon: '♠', color: 'black' }
     ];
+
+    // Cargar y mostrar la tabla visible inmediatamente cuando la página se abre
+    window.onload = function() {
+        updateLeaderboardDOM();
+    };
 
     function playLucky5() {
         if (totalBalance < 1000) return;
 
+        let playerName = document.getElementById('player-name').value.trim();
+        if (playerName === "") playerName = "Anónimo";
+
         const selectedValue = document.getElementById('user-choice').value;
         const playButton = document.getElementById('play-btn');
         
-        // Descontar costo de entrada de inmediato
+        document.getElementById('player-name').disabled = true;
+
         totalBalance -= 1000;
         document.getElementById('balance').innerText = '$' + totalBalance.toLocaleString();
         document.getElementById('balance').style.color = '#f38ba8';
 
-        // 1. Crear baraja inglesa estándar de 52 cartas
         let deck = [];
         for (let val of values) {
             for (let suit of suits) {
@@ -167,38 +203,33 @@
             }
         }
 
-        // 2. Muestreo SIN REEMPLAZO: Extraer 5 cartas al azar
         let hand = [];
         for (let i = 0; i < 5; i++) {
             let randomIndex = Math.floor(Math.random() * deck.length);
             hand.push(deck.splice(randomIndex, 1)[0]); 
         }
 
-        // 3. Contar cuántas cartas coinciden con la elegida (X)
         let successes = hand.filter(card => card.value === selectedValue).length;
 
-        // 4. Renderizar cartas limpiando el contenedor para gatillar la animación de golpe
         const cardsContainer = document.getElementById('cards-container');
         cardsContainer.innerHTML = '';
         
         hand.forEach(card => {
             const cardDiv = document.createElement('div');
             cardDiv.className = `card ${card.color}`;
-            cardDiv.innerHTML = `<div>${card.value}</div><div style="font-size: 24px;">${card.icon}</div>`;
+            cardDiv.innerHTML = `<div>${card.value}</div><div style="font-size: 22px;">${card.icon}</div>`;
             cardsContainer.appendChild(cardDiv);
         });
 
         gamesPlayed++;
         const resultOutput = document.getElementById('result-output');
         
-        // 5. Aplicar la distribución económica según la victoria/derrota
         if (successes >= 1) {
-            totalBalance += 2500; // Recupera la entrada ($1000) + Premio neto ($1500)
+            totalBalance += 2500; 
             resultOutput.innerHTML = `🎉 ¡Ganaste! Apareció el valor ${selectedValue}. (+$1.500 neto)`;
             resultOutput.className = "result-msg win";
             document.getElementById('balance').style.color = '#a6e3a1';
         } else {
-            // El cobro de los $1000 ya se hizo arriba
             resultOutput.innerHTML = `❌ Perdiste. Ninguna carta fue ${selectedValue}. (-$1.000)`;
             resultOutput.className = "result-msg lose";
             if(totalBalance >= 1000) {
@@ -206,18 +237,84 @@
             }
         }
 
-        // 6. Validar si se quedó sin dinero para jugar otra ronda
+        if (totalBalance > maxBalanceAchieved) {
+            maxBalanceAchieved = totalBalance;
+        }
+
+        // Registrar y actualizar el marcador visual automáticamente tras cada jugada
+        saveScore(playerName, gamesPlayed, maxBalanceAchieved);
+
         if (totalBalance < 1000) {
-            resultOutput.innerHTML = "💸 BANCO ROTO. Te has quedado sin fondos para pagar la entrada.";
+            resultOutput.innerHTML = "💸 BANCO ROTO. Te has quedado sin fondos. ¡Inténtalo de nuevo!";
             resultOutput.className = "result-msg game-over";
             playButton.disabled = true;
             document.getElementById('balance').style.color = '#f38ba8';
         }
 
-        // 7. Actualizar el tablero
         document.getElementById('balance').innerText = '$' + totalBalance.toLocaleString();
         document.getElementById('games-count').innerText = gamesPlayed;
         document.getElementById('success-count').innerText = successes;
+    }
+
+    function saveScore(name, games, maxScore) {
+        let leaderboard = JSON.parse(localStorage.getItem('lucky5_leaderboard')) || [];
+        let playerIndex = leaderboard.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+
+        if (playerIndex !== -1) {
+            if (maxScore > leaderboard[playerIndex].maxScore) {
+                leaderboard[playerIndex].maxScore = maxScore;
+                leaderboard[playerIndex].games = games;
+            }
+        } else {
+            leaderboard.push({ name: name, games: games, maxScore: maxScore });
+        }
+
+        leaderboard.sort((a, b) => b.maxScore - a.maxScore);
+        localStorage.setItem('lucky5_leaderboard', JSON.stringify(leaderboard));
+        updateLeaderboardDOM();
+    }
+
+    function updateLeaderboardDOM() {
+        let leaderboard = JSON.parse(localStorage.getItem('lucky5_leaderboard')) || [];
+        const tbody = document.getElementById('leaderboard-body');
+        tbody.innerHTML = '';
+
+        if(leaderboard.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color: #6c7086;">No hay puntuaciones registradas en esta máquina.</td></tr>`;
+            return;
+        }
+
+        // Mostrar un Top 5 estético en el marcador
+        leaderboard.slice(0, 5).forEach((player, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight: bold; color: #f9e2af;">#${index + 1}</td>
+                <td style="font-weight: bold;">${player.name}</td>
+                <td>${player.games}</td>
+                <td style="color: #a6e3a1; font-weight: bold;">$${player.maxScore.toLocaleString()}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function resetLeaderboard() {
+        if(confirm("¿Deseas reiniciar por completo el marcador y limpiar todas las puntuaciones?")) {
+            localStorage.removeItem('lucky5_leaderboard');
+            updateLeaderboardDOM();
+            
+            document.getElementById('player-name').disabled = false;
+            totalBalance = 20000;
+            maxBalanceAchieved = 20000;
+            gamesPlayed = 0;
+            document.getElementById('play-btn').disabled = false;
+            document.getElementById('balance').innerText = '$20.000';
+            document.getElementById('balance').style.color = '#a6e3a1';
+            document.getElementById('games-count').innerText = '0';
+            document.getElementById('success-count').innerText = '-';
+            document.getElementById('cards-container').innerHTML = '';
+            document.getElementById('result-output').innerHTML = "¡Marcador borrado con éxito!";
+            document.getElementById('result-output').className = "result-msg";
+        }
     }
 </script>
 
