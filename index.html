@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky 5 - Juego de Azar</title>
+    <!-- Cargamos Firebase desde la nube de forma segura -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,28 +26,9 @@
         }
         h1 { color: #f5c2e7; margin-bottom: 20px; font-size: 2.3em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); }
         
-        /* Sección de Reglas Desplegables */
-        .rules-details {
-            background: #1e1e2e;
-            border: 1px solid #45475a;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .rules-summary {
-            padding: 12px;
-            font-weight: bold;
-            color: #b4befe;
-            cursor: pointer;
-            user-select: none;
-            outline: none;
-        }
-        .rules-content {
-            padding: 0 15px 15px 15px;
-            font-size: 0.92em;
-            color: #bac2de;
-            line-height: 1.5;
-        }
+        .rules-details { background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; margin-bottom: 20px; text-align: left; }
+        .rules-summary { padding: 12px; font-weight: bold; color: #b4befe; cursor: pointer; user-select: none; outline: none; }
+        .rules-content { padding: 0 15px 15px 15px; font-size: 0.92em; color: #bac2de; line-height: 1.5; }
         .rules-content ul { margin: 5px 0; padding-left: 20px; }
         .rules-content li { margin-bottom: 5px; }
 
@@ -85,14 +69,13 @@
         .lose { color: #f38ba8; }
         .game-over { color: #fab387; }
 
-        /* Estilos de la Tabla del Marcador Histórico */
         .leaderboard-section { margin-top: 35px; background: #1e1e2e; padding: 20px; border-radius: 10px; border: 1px solid #45475a; text-align: left; }
         .leaderboard-section h2 { margin-top: 0; color: #f5c2e7; font-size: 1.4em; text-align: center; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #cdd6f4; }
         th, td { padding: 12px 10px; border-bottom: 1px solid #313244; text-align: center; font-size: 0.95em; }
         th { color: #b4befe; font-weight: bold; background: #313244; }
         .btn-reset-container { text-align: center; }
-        .btn-reset { background: #f38ba8; color: #11111b; font-size: 13px; padding: 8px 16px; margin-top: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-reset { background: #f38ba8; color: #11111b; font-size: 13px; padding: 8px 16px; margin-top: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
         .btn-reset:hover { background: #eba0b2; }
     </style>
 </head>
@@ -101,23 +84,22 @@
 <div class="container">
     <h1>Lucky 5 🃏</h1>
 
-    <!-- Pestaña de Reglas Oficiales -->
     <details class="rules-details">
         <summary class="rules-summary">📜 Ver Reglas Oficiales del Juego</summary>
         <div class="rules-content">
             <ul>
                 <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines (4 palos de 13 valores cada uno)[cite: 3].</li>
                 <li><strong>Apuesta:</strong> Cada jugada tiene un costo fijo de entrada obligatorio de <strong>$1.000</strong>[cite: 3].</li>
-                <li><strong>Mecánica:</strong> Antes de la extracción, eliges un único valor numérico o letra (A, 2, ..., K)[cite: 3]. El sistema baraja y extrae exactamente <strong>5 cartas al azar sin reemplazo</strong>[cite: 3].</li>
-                <li><strong>Condición de Victoria ($X \geq 1$):</strong> Si sale al menos una carta con el valor que elegiste, recuperas tu entrada y ganas un premio neto de <strong>+$1.500</strong>[cite: 3].</li>
-                <li><strong>Condición de Derrota ($X = 0$):</strong> Si ninguna de las 5 cartas coincide con tu elección, pierdes el valor de la entrada[cite: 3].</li>
+                <li><strong>Mecánica:</strong> Antes de la extracción, eliges un único valor numérico o letra (A, 2, ..., K)[cite: 3]. El mazo se baraja y se extraen <strong>5 cartas al azar sin reemplazo</strong>[cite: 3].</li>
+                <li><strong>Condición de Victoria ($X \geq 1$):</strong> Si sale al menos una carta con tu valor, recuperas tu entrada y ganas un premio neto de <strong>+$1.500</strong>[cite: 3].</li>
+                <li><strong>Condición de Derrota ($X = 0$):</strong> Si ninguna coincide, pierdes la entrada[cite: 3].</li>
             </ul>
         </div>
     </details>
 
     <div class="setup-box">
         <label for="player-name">Nombre del Jugador: </label>
-        <input type="text" id="player-name" placeholder="Escribe tu nombre aquí..." value="Jugador 1">
+        <input type="text" id="player-name" placeholder="Escribe tu nombre para el ranking global..." value="">
     </div>
 
     <div class="stat-box">
@@ -135,7 +117,7 @@
 
     <div class="cards-display" id="cards-container"></div>
 
-    <div id="result-output" class="result-msg">¡Ingresa tu nombre y empieza a jugar! Saldo inicial: $20.000.</div>
+    <div id="result-output" class="result-msg">¡Coloca tu nombre para entrar a la competencia mundial! Saldo inicial: $20.000.</div>
 
     <div class="stats">
         <div class="stat-box">Saldo Actual:<br><span id="balance" class="stat-val" style="color: #a6e3a1;">$20.000</span></div>
@@ -143,32 +125,51 @@
         <div class="stat-box">Éxitos (X):<br><span id="success-count" class="stat-val">-</span></div>
     </div>
 
-    <!-- SECCIÓN VISIBLE DEL MARCADOR CON REGISTROS -->
+    <!-- TABLA GLOBAL QUE CONECTA A TODA LA GENTE -->
     <div class="leaderboard-section">
-        <h2>🏆 Marcador: Registro de Puntuaciones</h2>
+        <h2>🏆 Ranking Global en Vivo (Firebase)</h2>
         <table>
             <thead>
                 <tr>
                     <th>Posición</th>
                     <th>Jugador</th>
-                    <th>Partidas Jugadas</th>
+                    <th>Partidas</th>
                     <th>Saldo Máximo</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <!-- Aquí se inyectan los registros guardados de forma automática -->
+                <tr><td colspan="4" style="color: #6c7086;">Conectando al servidor global...</td></tr>
             </tbody>
         </table>
         <div class="btn-reset-container">
-            <button class="btn-reset" onclick="resetLeaderboard()">Reiniciar Tabla de Récords 🔄</button>
+            <button class="btn-reset" onclick="resetGlobalLeaderboard()">Reiniciar Servidor 🔄</button>
         </div>
     </div>
 </div>
 
 <script>
+    // ==========================================
+    // REEMPLAZA ESTE BLOQUE CON TUS DATOS DE FIREBASE
+    // ==========================================
+   const firebaseConfig = {
+  apiKey: "AIzaSyCSVSk4PoRuOSpUl7At9Jycxxc4Nd24Db4",
+  authDomain: "lucky5-ucm.firebaseapp.com",
+  databaseURL: "https://lucky5-ucm-default-rtdb.firebaseio.com",
+  projectId: "lucky5-ucm",
+  storageBucket: "lucky5-ucm.firebasestorage.app",
+  messagingSenderId: "581329351134",
+  appId: "1:581329351134:web:c1d3a033efe6db1ccbad4f"
+};
+    // ==========================================
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     let totalBalance = 20000; 
     let maxBalanceAchieved = 20000; 
     let gamesPlayed = 0;
+    let playerId = null; // Identificador único para esta sesión de juego
 
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const suits = [
@@ -176,16 +177,50 @@
         { icon: '♣', color: 'black' }, { icon: '♠', color: 'black' }
     ];
 
-    // Cargar y mostrar la tabla visible inmediatamente cuando la página se abre
-    window.onload = function() {
-        updateLeaderboardDOM();
-    };
+    // Escuchar la Base de Datos en tiempo real para actualizar la tabla global de toda la gente
+    database.ref('leaderboard').on('value', (snapshot) => {
+        const data = snapshot.val();
+        const tbody = document.getElementById('leaderboard-body');
+        tbody.innerHTML = '';
+
+        if (!data) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color: #6c7086;">Nadie ha registrado puntuaciones globales aún.</td></tr>`;
+            return;
+        }
+
+        // Convertir objeto de Firebase a Array y ordenar de mayor a menor récord
+        let list = [];
+        for (let key in data) {
+            list.push(data[key]);
+        }
+        list.sort((a, b) => b.maxScore - a.maxScore);
+
+        // Mostrar el Top 5 de toda la gente que juegue en la web
+        list.slice(0, 5).forEach((player, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight: bold; color: #f9e2af;">#${index + 1}</td>
+                <td style="font-weight: bold;">${player.name}</td>
+                <td>${player.games}</td>
+                <td style="color: #a6e3a1; font-weight: bold;">$${player.maxScore.toLocaleString()}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    });
 
     function playLucky5() {
+        let nameInput = document.getElementById('player-name').value.trim();
+        if (nameInput === "") {
+            alert("¡Por favor ingresa tu nombre antes de apostar para registrarte en la nube!");
+            return;
+        }
+
         if (totalBalance < 1000) return;
 
-        let playerName = document.getElementById('player-name').value.trim();
-        if (playerName === "") playerName = "Anónimo";
+        // Generar un ID único para el jugador en Firebase si no tiene uno en esta partida
+        if (!playerId) {
+            playerId = nameInput.toLowerCase().replace(/[^a-z0-9]/g, "") + "_" + Math.floor(Math.random() * 100000);
+        }
 
         const selectedValue = document.getElementById('user-choice').value;
         const playButton = document.getElementById('play-btn');
@@ -241,8 +276,12 @@
             maxBalanceAchieved = totalBalance;
         }
 
-        // Registrar y actualizar el marcador visual automáticamente tras cada jugada
-        saveScore(playerName, gamesPlayed, maxBalanceAchieved);
+        // ENVIAR A LA NUBE GLOBAL EN TIEMPO REAL
+        database.ref('leaderboard/' + playerId).set({
+            name: nameInput,
+            games: gamesPlayed,
+            maxScore: maxBalanceAchieved
+        });
 
         if (totalBalance < 1000) {
             resultOutput.innerHTML = "💸 BANCO ROTO. Te has quedado sin fondos. ¡Inténtalo de nuevo!";
@@ -256,64 +295,13 @@
         document.getElementById('success-count').innerText = successes;
     }
 
-    function saveScore(name, games, maxScore) {
-        let leaderboard = JSON.parse(localStorage.getItem('lucky5_leaderboard')) || [];
-        let playerIndex = leaderboard.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-
-        if (playerIndex !== -1) {
-            if (maxScore > leaderboard[playerIndex].maxScore) {
-                leaderboard[playerIndex].maxScore = maxScore;
-                leaderboard[playerIndex].games = games;
-            }
-        } else {
-            leaderboard.push({ name: name, games: games, maxScore: maxScore });
-        }
-
-        leaderboard.sort((a, b) => b.maxScore - a.maxScore);
-        localStorage.setItem('lucky5_leaderboard', JSON.stringify(leaderboard));
-        updateLeaderboardDOM();
-    }
-
-    function updateLeaderboardDOM() {
-        let leaderboard = JSON.parse(localStorage.getItem('lucky5_leaderboard')) || [];
-        const tbody = document.getElementById('leaderboard-body');
-        tbody.innerHTML = '';
-
-        if(leaderboard.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="color: #6c7086;">No hay puntuaciones registradas en esta máquina.</td></tr>`;
-            return;
-        }
-
-        // Mostrar un Top 5 estético en el marcador
-        leaderboard.slice(0, 5).forEach((player, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="font-weight: bold; color: #f9e2af;">#${index + 1}</td>
-                <td style="font-weight: bold;">${player.name}</td>
-                <td>${player.games}</td>
-                <td style="color: #a6e3a1; font-weight: bold;">$${player.maxScore.toLocaleString()}</td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    function resetLeaderboard() {
-        if(confirm("¿Deseas reiniciar por completo el marcador y limpiar todas las puntuaciones?")) {
-            localStorage.removeItem('lucky5_leaderboard');
-            updateLeaderboardDOM();
-            
-            document.getElementById('player-name').disabled = false;
-            totalBalance = 20000;
-            maxBalanceAchieved = 20000;
-            gamesPlayed = 0;
-            document.getElementById('play-btn').disabled = false;
-            document.getElementById('balance').innerText = '$20.000';
-            document.getElementById('balance').style.color = '#a6e3a1';
-            document.getElementById('games-count').innerText = '0';
-            document.getElementById('success-count').innerText = '-';
-            document.getElementById('cards-container').innerHTML = '';
-            document.getElementById('result-output').innerHTML = "¡Marcador borrado con éxito!";
-            document.getElementById('result-output').className = "result-msg";
+    // EL BOTÓN DE REINICIO DE TODA LA TABLA GLOBAL
+    function resetGlobalLeaderboard() {
+        if(confirm("¿Quieres borrar por completo el servidor y vaciar la tabla de posiciones global de toda la gente?")) {
+            database.ref('leaderboard').remove().then(() => {
+                alert("¡Base de datos en la nube limpiada con éxito!");
+                location.reload(); // Recargar el juego actual
+            });
         }
     }
 </script>
