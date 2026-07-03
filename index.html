@@ -24,7 +24,8 @@
             border-radius: 15px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        h1 { color: #f5c2e7; margin-bottom: 20px; font-size: 2.3em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); }
+        /* Título con detector de clics secreto */
+        h1 { color: #f5c2e7; margin-bottom: 20px; font-size: 2.3em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); user-select: none; cursor: default; }
         
         .rules-details { background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; margin-bottom: 20px; text-align: left; }
         .rules-summary { padding: 12px; font-weight: bold; color: #b4befe; cursor: pointer; user-select: none; outline: none; }
@@ -69,26 +70,25 @@
         .lose { color: #f38ba8; }
         .game-over { color: #fab387; }
 
+        /* Marcador global limpio sin ningún botón a la vista */
         .leaderboard-section { margin-top: 35px; background: #1e1e2e; padding: 20px; border-radius: 10px; border: 1px solid #45475a; text-align: left; }
         .leaderboard-section h2 { margin-top: 0; color: #f5c2e7; font-size: 1.4em; text-align: center; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #cdd6f4; }
         th, td { padding: 12px 10px; border-bottom: 1px solid #313244; text-align: center; font-size: 0.95em; }
         th { color: #b4befe; font-weight: bold; background: #313244; }
-        .btn-reset-container { text-align: center; }
-        .btn-reset { background: #f38ba8; color: #11111b; font-size: 13px; padding: 8px 16px; margin-top: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-reset:hover { background: #eba0b2; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Lucky 5 🃏</h1>
+    <!-- Clics ocultos aquí activarán el borrado de Firebase -->
+    <h1 onclick="secretGlobalResetTrigger()">Lucky 5 🃏</h1>
 
     <details class="rules-details">
         <summary class="rules-summary">📜 Ver Reglas Oficiales del Juego</summary>
         <div class="rules-content">
             <ul>
-                <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines (4 palos de 13 valores cada uno)[cite: 3].</li>
+                <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines (4 palos de 13 valores cada uno).</li>
                 <li><strong>Apuesta:</strong> Cada jugada tiene un costo fijo de entrada obligatorio de <strong>$1.000</strong>[cite: 3].</li>
                 <li><strong>Mecánica:</strong> Antes de la extracción, eliges un único valor numérico o letra (A, 2, ..., K)[cite: 3]. El mazo se baraja y se extraen <strong>5 cartas al azar sin reemplazo</strong>[cite: 3].</li>
                 <li><strong>Condición de Victoria ($X \geq 1$):</strong> Si sale al menos una carta con tu valor, recuperas tu entrada y ganas un premio neto de <strong>+$1.500</strong>[cite: 3].</li>
@@ -117,7 +117,7 @@
 
     <div class="cards-display" id="cards-container"></div>
 
-    <div id="result-output" class="result-msg">¡Coloca tu nombre para entrar a la competencia mundial! Saldo inicial: $20.000.</div>
+    <div id="result-output" class="result-msg">¡Coloca tu nombre para entrar a la competencia! Saldo inicial: $20.000.</div>
 
     <div class="stats">
         <div class="stat-box">Saldo Actual:<br><span id="balance" class="stat-val" style="color: #a6e3a1;">$20.000</span></div>
@@ -125,7 +125,7 @@
         <div class="stat-box">Éxitos (X):<br><span id="success-count" class="stat-val">-</span></div>
     </div>
 
-    <!-- TABLA GLOBAL QUE CONECTA A TODA LA GENTE -->
+    <!-- TABLA GLOBAL DE PUNTUACIONES -->
     <div class="leaderboard-section">
         <h2>🏆 Ranking Global en Vivo (Firebase)</h2>
         <table>
@@ -141,17 +141,14 @@
                 <tr><td colspan="4" style="color: #6c7086;">Conectando al servidor global...</td></tr>
             </tbody>
         </table>
-        <div class="btn-reset-container">
-            <button class="btn-reset" onclick="resetGlobalLeaderboard()">Reiniciar Servidor 🔄</button>
-        </div>
     </div>
 </div>
 
 <script>
-    // ==========================================
-    // REEMPLAZA ESTE BLOQUE CON TUS DATOS DE FIREBASE
-    // ==========================================
-   const firebaseConfig = {
+    // ========================================================
+    // AQUÍ ESTÁ LA PARTE PARA REEMPLAZAR TUS DATOS DE FIREBASE 👇
+    // ========================================================
+const firebaseConfig = {
   apiKey: "AIzaSyCSVSk4PoRuOSpUl7At9Jycxxc4Nd24Db4",
   authDomain: "lucky5-ucm.firebaseapp.com",
   databaseURL: "https://lucky5-ucm-default-rtdb.firebaseio.com",
@@ -160,7 +157,8 @@
   messagingSenderId: "581329351134",
   appId: "1:581329351134:web:c1d3a033efe6db1ccbad4f"
 };
-    // ==========================================
+
+    // ========================================================
 
     // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
@@ -169,7 +167,8 @@
     let totalBalance = 20000; 
     let maxBalanceAchieved = 20000; 
     let gamesPlayed = 0;
-    let playerId = null; // Identificador único para esta sesión de juego
+    let playerId = null; 
+    let secretClickCount = 0; // Contador secreto para ti
 
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const suits = [
@@ -177,7 +176,7 @@
         { icon: '♣', color: 'black' }, { icon: '♠', color: 'black' }
     ];
 
-    // Escuchar la Base de Datos en tiempo real para actualizar la tabla global de toda la gente
+    // Escuchar la Base de Datos en tiempo real para armar el ranking de todos
     database.ref('leaderboard').on('value', (snapshot) => {
         const data = snapshot.val();
         const tbody = document.getElementById('leaderboard-body');
@@ -188,14 +187,10 @@
             return;
         }
 
-        // Convertir objeto de Firebase a Array y ordenar de mayor a menor récord
         let list = [];
-        for (let key in data) {
-            list.push(data[key]);
-        }
+        for (let key in data) { list.push(data[key]); }
         list.sort((a, b) => b.maxScore - a.maxScore);
 
-        // Mostrar el Top 5 de toda la gente que juegue en la web
         list.slice(0, 5).forEach((player, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -217,7 +212,6 @@
 
         if (totalBalance < 1000) return;
 
-        // Generar un ID único para el jugador en Firebase si no tiene uno en esta partida
         if (!playerId) {
             playerId = nameInput.toLowerCase().replace(/[^a-z0-9]/g, "") + "_" + Math.floor(Math.random() * 100000);
         }
@@ -276,7 +270,7 @@
             maxBalanceAchieved = totalBalance;
         }
 
-        // ENVIAR A LA NUBE GLOBAL EN TIEMPO REAL
+        // Subir puntuaciones a Firebase
         database.ref('leaderboard/' + playerId).set({
             name: nameInput,
             games: gamesPlayed,
@@ -295,14 +289,19 @@
         document.getElementById('success-count').innerText = successes;
     }
 
-    // EL BOTÓN DE REINICIO DE TODA LA TABLA GLOBAL
-    function resetGlobalLeaderboard() {
-        if(confirm("¿Quieres borrar por completo el servidor y vaciar la tabla de posiciones global de toda la gente?")) {
-            database.ref('leaderboard').remove().then(() => {
-                alert("¡Base de datos en la nube limpiada con éxito!");
-                location.reload(); // Recargar el juego actual
-            });
+    // EL TRUCO SECRETO GLOBAL (Líneas 230-244): Haces 5 clics rápidos en "Lucky 5 🃏" y borra Firebase
+    function secretGlobalResetTrigger() {
+        secretClickCount++;
+        if (secretClickCount === 5) {
+            secretClickCount = 0; 
+            if(confirm("🔑 Modo Administrador: ¿Quieres borrar por completo la base de datos en la nube (Firebase) para toda la gente?")) {
+                database.ref('leaderboard').remove().then(() => {
+                    alert("¡Servidor global limpiado con éxito!");
+                    location.reload(); 
+                });
+            }
         }
+        setTimeout(() => { secretClickCount = 0; }, 3000);
     }
 </script>
 
