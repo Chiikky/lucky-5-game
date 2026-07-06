@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky 5 - Juego de Azar</title>
@@ -24,7 +24,6 @@
             border-radius: 15px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        /* Título con detector de clics secreto */
         h1 { color: #f5c2e7; margin-bottom: 20px; font-size: 2.3em; text-shadow: 0 0 10px rgba(245, 194, 231, 0.3); user-select: none; cursor: default; }
         
         .rules-details { background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; margin-bottom: 20px; text-align: left; }
@@ -70,7 +69,6 @@
         .lose { color: #f38ba8; }
         .game-over { color: #fab387; }
 
-        /* Marcador global limpio sin ningún botón a la vista */
         .leaderboard-section { margin-top: 35px; background: #1e1e2e; padding: 20px; border-radius: 10px; border: 1px solid #45475a; text-align: left; }
         .leaderboard-section h2 { margin-top: 0; color: #f5c2e7; font-size: 1.4em; text-align: center; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #cdd6f4; }
@@ -81,18 +79,25 @@
 <body>
 
 <div class="container">
-    <!-- Clics ocultos aquí activarán el borrado de Firebase -->
     <h1 onclick="secretGlobalResetTrigger()">Lucky 5 🃏</h1>
 
+    <!-- Pestaña de Reglas Oficiales Actualizada y Sin Citas -->
     <details class="rules-details">
         <summary class="rules-summary">📜 Ver Reglas Oficiales del Juego</summary>
         <div class="rules-content">
             <ul>
-                <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines (4 palos de 13 valores cada uno).</li>
-                <li><strong>Apuesta:</strong> Cada jugada tiene un costo fijo de entrada obligatorio de <strong>$1.000</strong>.</li>
-                <li><strong>Mecánica:</strong> Antes de la extracción, eliges un único valor numérico o letra (A, 2, ..., K)[cite: 3]. El mazo se baraja y se extraen <strong>5 cartas al azar sin reemplazo</strong>.</li>
-                <li><strong>Condición de Victoria ($X \geq 1$):</strong> Si sale al menos una carta con tu valor, recuperas tu entrada y ganas un premio neto de <strong>+$1.500</strong>].</li>
-                <li><strong>Condición de Derrota ($X = 0$):</strong> Si ninguna coincide, pierdes la entrada.</li>
+                <li><strong>Materiales:</strong> Se utiliza un mazo inglés estándar de 52 cartas sin comodines.</li>
+                <li><strong>Apuesta:</strong> Cada jugada tiene un costo de entrada obligatorio de $1.000[cite: 4].</li>
+                <li><strong>Mecánica:</strong> Elige un valor único (ej: K). El crupier baraja y extrae exactamente 5 cartas al azar sin reemplazo[cite: 4].</li>
+                <li><strong>Niveles de Premios Netos:</strong>
+                    <ul>
+                        <li>Obtener 1 carta seleccionada: <strong>+$1.500</strong>[cite: 4].</li>
+                        <li>Obtener 2 cartas seleccionadas: <strong>+$3.000</strong>[cite: 4].</li>
+                        <li>Obtener 3 cartas seleccionadas: <strong>+$6.000</strong>[cite: 4].</li>
+                        <li>Obtener 4 cartas seleccionadas: <strong>+$12.000</strong>[cite: 4].</li>
+                    </ul>
+                </li>
+                <li><strong>Condición de Derrota (0 cartas):</strong> Si ninguna de las cartas extraídas coincide con tu valor elegido, pierdes la entrada de $1.000[cite: 4].</li>
             </ul>
         </div>
     </details>
@@ -125,7 +130,6 @@
         <div class="stat-box">Éxitos (X):<br><span id="success-count" class="stat-val">-</span></div>
     </div>
 
-    <!-- TABLA GLOBAL DE PUNTUACIONES -->
     <div class="leaderboard-section">
         <h2>🏆 Ranking Global en Vivo (Firebase)</h2>
         <table>
@@ -146,21 +150,21 @@
 
 <script>
     // ========================================================
-    // AQUÍ ESTÁ LA PARTE PARA REEMPLAZAR TUS DATOS DE FIREBASE 👇
+    // REEMPLAZA ESTE BLOQUE CON TUS DATOS DE FIREBASE SI LO USAS
     // ========================================================
-   const firebaseConfig = {
-  apiKey: "AIzaSyCSVSk4PoRuOSpUl7At9Jycxxc4Nd24Db4",
+    const firebaseConfig = {
+        apiKey: "AIzaSyCSVSk4PoRuOSpUl7At9Jycxxc4Nd24Db4",
   authDomain: "lucky5-ucm.firebaseapp.com",
   databaseURL: "https://lucky5-ucm-default-rtdb.firebaseio.com",
   projectId: "lucky5-ucm",
   storageBucket: "lucky5-ucm.firebasestorage.app",
   messagingSenderId: "581329351134",
-  appId: "1:581329351134:web:c1d3a033efe6db1ccbad4f"
+  appId: "1:581329351134:web:c1d3a033efe6db1ccbad4f",
+  measurementId: "G-6JM76SDDCY"
 };
 
     // ========================================================
 
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
@@ -168,7 +172,7 @@
     let maxBalanceAchieved = 20000; 
     let gamesPlayed = 0;
     let playerId = null; 
-    let secretClickCount = 0; // Contador secreto para ti
+    let secretClickCount = 0; 
 
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const suits = [
@@ -176,7 +180,6 @@
         { icon: '♣', color: 'black' }, { icon: '♠', color: 'black' }
     ];
 
-    // Escuchar la Base de Datos en tiempo real para armar el ranking de todos
     database.ref('leaderboard').on('value', (snapshot) => {
         const data = snapshot.val();
         const tbody = document.getElementById('leaderboard-body');
@@ -253,9 +256,25 @@
         gamesPlayed++;
         const resultOutput = document.getElementById('result-output');
         
-        if (successes >= 1) {
-            totalBalance += 2500; 
-            resultOutput.innerHTML = `🎉 ¡Ganaste! Apareció el valor ${selectedValue}. (+$1.500 neto)`;
+        // CONFIGURACIÓN DE LOS NUEVOS CASOS ESCALONADOS
+        if (successes === 1) {
+            totalBalance += 2500; // Recupera entrada ($1.000) + Premio neto ($1.500)
+            resultOutput.innerHTML = `🎉 ¡Ganaste! Obtuviste 1 carta. (+$1.500 neto)`;
+            resultOutput.className = "result-msg win";
+            document.getElementById('balance').style.color = '#a6e3a1';
+        } else if (successes === 2) {
+            totalBalance += 4000; // Recupera entrada ($1.000) + Premio neto ($3.000)
+            resultOutput.innerHTML = `🔥 ¡ESPECTACULAR! Obtuviste 2 cartas. (+$3.000 neto)`;
+            resultOutput.className = "result-msg win";
+            document.getElementById('balance').style.color = '#a6e3a1';
+        } else if (successes === 3) {
+            totalBalance += 7000; // Recupera entrada ($1.000) + Premio neto ($6.000)
+            resultOutput.innerHTML = `💎 ¡INCREÍBLE RACHÁ! Obtuviste 3 cartas. (+$6.000 neto)`;
+            resultOutput.className = "result-msg win";
+            document.getElementById('balance').style.color = '#a6e3a1';
+        } else if (successes === 4) {
+            totalBalance += 13000; // Recupera entrada ($1.000) + Premio neto ($12.000)
+            resultOutput.innerHTML = `👑 ¡JACKPOT IMPOSIBLE! Obtuviste las 4 cartas. (+$12.000 neto)`;
             resultOutput.className = "result-msg win";
             document.getElementById('balance').style.color = '#a6e3a1';
         } else {
@@ -270,7 +289,6 @@
             maxBalanceAchieved = totalBalance;
         }
 
-        // Subir puntuaciones a Firebase
         database.ref('leaderboard/' + playerId).set({
             name: nameInput,
             games: gamesPlayed,
@@ -289,7 +307,6 @@
         document.getElementById('success-count').innerText = successes;
     }
 
-    // EL TRUCO SECRETO GLOBAL (Líneas 230-244): Haces 5 clics rápidos en "Lucky 5 🃏" y borra Firebase
     function secretGlobalResetTrigger() {
         secretClickCount++;
         if (secretClickCount === 5) {
